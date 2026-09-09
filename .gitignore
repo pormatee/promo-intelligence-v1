@@ -1,14 +1,25 @@
+# Runtime / generated data
 data/
 output/
+
+# Generated frontend
 promo_consumer.html
 promo_lab.html
 promo_frontend.html
+
+# Python / logs / backups
 __pycache__/
 *.pyc
+*.pyo
 *.log
 *.bak
+*.backup
 *.zip
 *.db
-*.sqlite*
+*.sqlite
+*.sqlite3
+
+# Secrets
 .env
 .env.*
+!.env.example
