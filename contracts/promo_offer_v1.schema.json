@@ -1,0 +1,566 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promo_offer_v1",
+  "title": "Promo Offer V1",
+  "type": "object",
+  "required": [
+    "contract",
+    "offer_id",
+    "offer_type",
+    "merchant",
+    "item",
+    "pricing",
+    "validity",
+    "conditions",
+    "verification",
+    "source",
+    "evidence"
+  ],
+  "properties": {
+    "contract": {
+      "const": "promo_offer_v1"
+    },
+    "offer_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "offer_type": {
+      "enum": [
+        "price_discount",
+        "special_price",
+        "coupon",
+        "bundle",
+        "other"
+      ]
+    },
+    "merchant": {
+      "type": "object",
+      "required": [
+        "name",
+        "branch"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "branch": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "item": {
+      "type": "object",
+      "required": [
+        "name",
+        "brand",
+        "category"
+      ],
+      "properties": {
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "brand": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "pricing": {
+      "type": "object",
+      "required": [
+        "currency",
+        "regular_price",
+        "promo_price",
+        "discount_amount",
+        "discount_percent"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string"
+        },
+        "regular_price": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "promo_price": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "discount_amount": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "discount_percent": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "verification_state": {
+          "enum": [
+            "verified",
+            "partial",
+            "rejected",
+            "not_applicable"
+          ]
+        },
+        "anomalies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pair_same_product_block": {
+          "type": "boolean"
+        }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "required": [
+        "start",
+        "end"
+      ],
+      "properties": {
+        "start": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "end": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "verification_state",
+        "freshness_state",
+        "expiry_state",
+        "source_reliability"
+      ],
+      "properties": {
+        "verification_state": {
+          "enum": [
+            "verified",
+            "partial",
+            "unverified",
+            "rejected"
+          ]
+        },
+        "freshness_state": {
+          "enum": [
+            "fresh",
+            "stale",
+            "unknown"
+          ]
+        },
+        "expiry_state": {
+          "enum": [
+            "active",
+            "expired",
+            "unknown"
+          ]
+        },
+        "source_reliability": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unknown"
+          ]
+        },
+        "price_verification_state": {
+          "enum": [
+            "verified",
+            "partial",
+            "rejected",
+            "not_applicable"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "source_type",
+        "url",
+        "observed_at"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string"
+        },
+        "source_type": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "observed_at": {
+          "type": "string"
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "content_hash",
+        "source_offer_id",
+        "extracted_text"
+      ],
+      "properties": {
+        "content_hash": {
+          "type": "string"
+        },
+        "source_offer_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "extracted_text": {
+          "type": "string"
+        },
+        "corroborating_sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "source_id",
+              "url",
+              "content_hash"
+            ],
+            "properties": {
+              "source_id": {
+                "type": "string"
+              },
+              "source_type": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "url": {
+                "type": "string"
+              },
+              "observed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "content_hash": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "price_fields": {
+          "type": "object",
+          "properties": {
+            "promo_price": {
+              "$ref": "#/$defs/priceFieldEvidence"
+            },
+            "regular_price": {
+              "$ref": "#/$defs/priceFieldEvidence"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "required": [
+        "scope",
+        "country",
+        "provinces",
+        "branches",
+        "verification_state",
+        "basis"
+      ],
+      "properties": {
+        "scope": {
+          "enum": [
+            "nationwide",
+            "selected_branches",
+            "branch_specific",
+            "unknown"
+          ]
+        },
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "provinces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "branches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "verification_state": {
+          "enum": [
+            "explicit",
+            "unknown"
+          ]
+        },
+        "basis": {
+          "enum": [
+            "offer_text",
+            "source_config",
+            "none"
+          ]
+        },
+        "channel": {
+          "enum": [
+            "online",
+            "store",
+            "omnichannel",
+            "unknown"
+          ]
+        },
+        "channel_basis": {
+          "enum": [
+            "offer_text",
+            "source_config",
+            "none"
+          ]
+        }
+      }
+    },
+    "geography": {
+      "type": "object",
+      "required": [
+        "country",
+        "detail_state",
+        "best_granularity",
+        "locations"
+      ],
+      "properties": {
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detail_state": {
+          "enum": [
+            "explicit",
+            "partial",
+            "nationwide",
+            "unknown"
+          ]
+        },
+        "best_granularity": {
+          "enum": [
+            "coordinates",
+            "address",
+            "subdistrict",
+            "district",
+            "province",
+            "branch",
+            "nationwide",
+            "unknown"
+          ]
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "province",
+              "province_raw",
+              "district",
+              "subdistrict",
+              "branch_name",
+              "address",
+              "postal_code",
+              "latitude",
+              "longitude",
+              "verification_state",
+              "basis",
+              "evidence_excerpt",
+              "granularity"
+            ],
+            "properties": {
+              "province": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "province_raw": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "district": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subdistrict": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "branch_name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "address": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "postal_code": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "pattern": "^[0-9]{5}$"
+              },
+              "latitude": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": -90,
+                "maximum": 90
+              },
+              "longitude": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": -180,
+                "maximum": 180
+              },
+              "verification_state": {
+                "const": "explicit"
+              },
+              "basis": {
+                "enum": [
+                  "offer_text",
+                  "source_config",
+                  "applicability",
+                  "none"
+                ]
+              },
+              "evidence_excerpt": {
+                "type": "string"
+              },
+              "granularity": {
+                "enum": [
+                  "coordinates",
+                  "address",
+                  "subdistrict",
+                  "district",
+                  "province",
+                  "branch",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "merchant_place_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "place_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "priceFieldEvidence": {
+      "type": "object",
+      "required": [
+        "raw_value",
+        "supported",
+        "sanitized_value",
+        "evidence_excerpt"
+      ],
+      "properties": {
+        "raw_value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "supported": {
+          "type": "boolean"
+        },
+        "sanitized_value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "evidence_excerpt": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  }
+}

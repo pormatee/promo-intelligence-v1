@@ -1,0 +1,7 @@
+{
+  "scheduled_interval_seconds": 86400,
+  "on_demand_min_age_seconds": 900,
+  "on_demand_cooldown_seconds": 300,
+  "lock_file": "data/state/promo_refresh.lock",
+  "state_file": "data/state/promo_update_state.json"
+}

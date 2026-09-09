@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promo_place_index_v1",
+  "title": "Promo Merchant Branch Index V1",
+  "type": "object",
+  "required": ["contract", "generated_at", "merchant_count", "branch_count", "merchant_branches", "semantics"],
+  "properties": {
+    "contract": {"const": "promo_place_index_v1"},
+    "generated_at": {"type": "string"},
+    "merchant_count": {"type": "integer", "minimum": 0},
+    "branch_count": {"type": "integer", "minimum": 0},
+    "merchant_branches": {
+      "type": "object",
+      "additionalProperties": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+    },
+    "semantics": {"type": "string"}
+  }
+}

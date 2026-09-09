@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promo_place_v1",
+  "title": "Promo Place V1",
+  "type": "object",
+  "required": ["contract", "place_id", "record_kind", "merchant", "branch", "location", "precision", "search_terms", "verification", "evidence", "updated_at"],
+  "properties": {
+    "contract": {"const": "promo_place_v1"},
+    "place_id": {"type": "string", "minLength": 1},
+    "record_kind": {"enum": ["merchant", "branch"]},
+    "parent_place_id": {"type": ["string", "null"]},
+    "merchant": {"type": "object"},
+    "branch": {"type": "object"},
+    "location": {"type": "object"},
+    "precision": {"enum": ["merchant", "branch", "province", "district", "subdistrict", "address", "coordinates", "unknown"]},
+    "search_terms": {"type": "array", "items": {"type": "string"}},
+    "verification": {"type": "object"},
+    "evidence": {"type": "array"},
+    "updated_at": {"type": "string"}
+  }
+}

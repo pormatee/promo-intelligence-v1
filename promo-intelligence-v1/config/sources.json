@@ -1,0 +1,11 @@
+[
+  {
+    "source_id": "lotus_promotions_1544_en",
+    "source_type": "official_web",
+    "merchant": "Lotus's",
+    "url": "https://my.lotuss.com/promotions/1544/en",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "lotus_text_offers_v1"
+  }
+]

@@ -1,0 +1,5 @@
+P6_IMPORT_HOTFIX=PASS
+ROOT_CAUSE=offer_identity_loop targeted unittest subprocess did not include project src/ on PYTHONPATH
+FIX_1=offer_identity_loop injects ROOT/src into child PYTHONPATH
+FIX_2=test_p6_offer_identity.py also inserts ROOT/src for direct/manual test execution
+TARGETED_TESTS=12_PASS

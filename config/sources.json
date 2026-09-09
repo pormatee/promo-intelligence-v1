@@ -1,0 +1,450 @@
+[
+  {
+    "source_id": "lotus_promotions_1544_en",
+    "source_type": "official_web",
+    "merchant": "Lotus's",
+    "url": "https://my.lotuss.com/promotions/1544/en",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "lotus_text_offers_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "lotus",
+    "channel": "store"
+  },
+  {
+    "source_id": "lotus_tctplus_g2_en",
+    "source_type": "official_web",
+    "merchant": "Lotus's",
+    "url": "https://my.lotuss.com/promotions/tctplus-g2/en",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "lotus_nationwide_coupon_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "lotus",
+    "channel": "store"
+  },
+  {
+    "source_id": "tops_rte_fresh_food_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Tops Online",
+    "url": "https://www.tops.co.th/th/campaign/promotion-rte-deli-2-sep-2026-15-sep-2026/fresh-food-bakery",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "tops_product_grid_v2",
+    "validity_raw": "2 September 2026 - 15 September 2026",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "tops",
+    "channel": "online",
+    "zero_offer_alternate_urls": [
+      "https://www.tops.co.th/en/campaign/promotion-rte-deli-2-sep-2026-15-sep-2026/fresh-food-bakery",
+      "https://www.tops.co.th/th/campaign/promotion-rte-deli-2-sep-2026-15-sep-2026/express-ready-meal",
+      "https://www.tops.co.th/th/campaign/promotion-rte-deli-2-sep-2026-15-sep-2026/fresh-food-bakery/egg"
+    ],
+    "zero_offer_timeout_seconds": 12,
+    "zero_offer_curl_fallback": true
+  },
+  {
+    "source_id": "tops_monthly_mega_deals_q3_2026",
+    "source_type": "official_web",
+    "merchant": "Tops Online",
+    "url": "https://www.tops.co.th/th/page/tops-online-monthly-mega-deals",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "tops_coupon_page_v1",
+    "validity_raw": "1 July 2026 - 30 September 2026",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "tops",
+    "channel": "online"
+  },
+  {
+    "source_id": "bigc_coupon_b2c_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Big C Online",
+    "url": "https://www.bigc.co.th/p/terms-coupon-b2c-20260301",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "bigc_coupon_terms_v1",
+    "validity_raw": "3 - 30 กันยายน 2569",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "bigc",
+    "channel": "online"
+  },
+  {
+    "source_id": "bigc_pepsico_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Big C Online",
+    "url": "https://www.bigc.co.th/p/terms-coupon-lays-disc-20260905",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "bigc_coupon_terms_v1",
+    "validity_raw": "5 - 11 กันยายน 2569",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "bigc",
+    "channel": "online"
+  },
+  {
+    "source_id": "bigc_doritos_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Big C Online",
+    "url": "https://www.bigc.co.th/p/terms-coupon-doritos-disc-20260903",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "bigc_coupon_terms_v1",
+    "validity_raw": "3 - 30 กันยายน 2569",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "bigc",
+    "channel": "online"
+  },
+  {
+    "source_id": "bigc_toshiba100_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Big C Online",
+    "url": "https://www.bigc.co.th/p/terms-coupon-toshiba-100-disc-20260901",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "bigc_coupon_terms_v1",
+    "validity_raw": "3 - 23 กันยายน 2569",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "bigc",
+    "channel": "online"
+  },
+  {
+    "source_id": "bigc_toshiba_tiers_aug_sep_2026",
+    "source_type": "official_web",
+    "merchant": "Big C Online",
+    "url": "https://www.bigc.co.th/p/terms-coupon-toshiba-disc-20260816",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "bigc_coupon_terms_v1",
+    "validity_raw": "16 สิงหาคม - 30 กันยายน 2569",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "family": "bigc",
+    "channel": "online"
+  },
+  {
+    "source_id": "cjmore_promotions_sep_2026",
+    "family": "cjmore",
+    "source_type": "official_web",
+    "merchant": "CJ MORE",
+    "url": "https://www.cjmore.co.th/promotion",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "store"
+  },
+  {
+    "source_id": "seveneleven_promotions_aug_sep_2026",
+    "family": "7eleven",
+    "source_type": "official_web",
+    "merchant": "7-Eleven Thailand",
+    "url": "https://www.7eleven.co.th/promotion",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "store"
+  },
+  {
+    "source_id": "allonline_coupon_sep_2026",
+    "family": "allonline",
+    "source_type": "official_web",
+    "merchant": "ALL Online",
+    "url": "https://www.allonline.7eleven.co.th/coupon/",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "coupon_cards_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "allonline_flashsale_live",
+    "family": "allonline",
+    "source_type": "official_web",
+    "merchant": "ALL Online",
+    "url": "https://www.allonline.7eleven.co.th/flashsale/",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "generic_dual_price_grid_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online",
+    "timeout_seconds": 24,
+    "recovery_budget_seconds": 28,
+    "curl_fallback": true,
+    "alternate_urls": [
+      "https://allonline.7eleven.co.th/flashsale/",
+      "https://www.allonline.7eleven.co.th/flashsale/?app_redirect=true"
+    ]
+  },
+  {
+    "source_id": "watsons_brandcodes_sep_2026",
+    "family": "watsons",
+    "source_type": "official_web",
+    "merchant": "Watsons Thailand",
+    "url": "https://www.watsons.co.th/th/brandcode-Sep-2026",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "brand_discount_cards_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online",
+    "timeout_seconds": 15,
+    "recovery_budget_seconds": 34,
+    "curl_fallback": true,
+    "alternate_urls": [
+      "https://www.watsons.co.th/en/brandcode-Sep-2026"
+    ]
+  },
+  {
+    "source_id": "watsons_99_campaign_2026",
+    "family": "watsons",
+    "source_type": "official_web",
+    "merchant": "Watsons Thailand",
+    "url": "https://www.watsons.co.th/th/c/0809092537001",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "generic_dual_price_grid_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online",
+    "timeout_seconds": 15,
+    "recovery_budget_seconds": 34,
+    "curl_fallback": true,
+    "alternate_urls": [
+      "https://www.watsons.co.th/en/c/0809092537001"
+    ]
+  },
+  {
+    "source_id": "makro_pro_home_campaigns_sep_2026",
+    "family": "makro",
+    "source_type": "official_web",
+    "merchant": "Makro PRO",
+    "url": "https://www.makro.pro/th",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "homepro_coupon_sep_2026",
+    "family": "homepro",
+    "source_type": "official_web",
+    "merchant": "HomePro",
+    "url": "https://www.homepro.co.th/coupon/?openExternalBrowser=1",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "coupon_cards_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "central_99_sep_2026",
+    "family": "central",
+    "source_type": "official_web",
+    "merchant": "Central Online",
+    "url": "https://www.central.co.th/th/campaign/99",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "central_branddays_sep_2026",
+    "family": "central",
+    "source_type": "official_web",
+    "merchant": "Central Online",
+    "url": "https://www.central.co.th/en/campaign/o2o-in-store-media-cds",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "powerbuy_kitchen_saver_live",
+    "family": "powerbuy",
+    "source_type": "official_web",
+    "merchant": "Power Buy",
+    "url": "https://www.powerbuy.co.th/en/promotion/power-buy-saver-kitchen-appliances",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "generic_dual_price_grid_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "powerbuy_tv_saver_live",
+    "family": "powerbuy",
+    "source_type": "official_web",
+    "merchant": "Power Buy",
+    "url": "https://www.powerbuy.co.th/en/promotion/power-buy-saver-tv",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "generic_dual_price_grid_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "dohome_shipping_discount_q3_2026",
+    "family": "dohome",
+    "source_type": "official_web",
+    "merchant": "Dohome",
+    "url": "https://www.dohome.co.th/p/free-shipping-promotion",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "shipping_tiers_v1",
+    "validity_raw": "1 July 2026 - 30 September 2026",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "online"
+  },
+  {
+    "source_id": "globalhouse_sep_2026_nationwide",
+    "family": "globalhouse",
+    "source_type": "official_web",
+    "merchant": "Global House",
+    "url": "https://globalhouse.co.th/articles/september-2569-tile-bathroom",
+    "enabled": true,
+    "reliability": "high",
+    "extractor": "campaign_list_v1",
+    "applicability": {
+      "scope": "unknown",
+      "country": "TH",
+      "provinces": [],
+      "branches": [],
+      "verification_state": "unknown"
+    },
+    "channel": "store"
+  }
+]

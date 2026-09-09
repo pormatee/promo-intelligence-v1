@@ -1,0 +1,8 @@
+Promo Intelligence P2 - National Geographic Coverage Foundation
+
+Goal:
+- Preserve standalone promo_offer_v1 pipeline.
+- Add evidence-based nationwide geographic reach accounting across all 77 Thai provinces.
+- Add one real-source-shaped nationwide promotion adapter/fixture.
+- Never convert unknown location to nationwide without explicit evidence.
+- Geographic reach does NOT claim complete market/source coverage.

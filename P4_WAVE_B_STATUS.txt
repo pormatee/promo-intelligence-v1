@@ -1,0 +1,42 @@
+PROMO INTELLIGENCE — P4 WAVE B QUALITY & DIAGNOSTICS
+
+DEVELOPMENT_STATUS=PASS
+LIVE_STATUS=PENDING_TERMUX
+BASELINE=P4_WAVE_A_CLOSED_PASS
+CONTRACT=promo_offer_v1
+CONTRACT_BREAKING_CHANGE=FALSE
+SOURCE_REGISTRY_COUNT=23
+SOURCE_FAMILIES=13
+TESTS=48
+TEST_RESULT=PASS
+
+ADDITIONS:
+- bounded transient fetch retry without reintroducing stalls
+- browser-compatible request headers
+- named fetch/extract failure reporting
+- zero-offer source IDs
+- output/promo_offer_v1.diagnostics.json
+- source/family offer counts
+- location unknown counts by source
+- explicit Thai province/branch evidence extraction
+- channel classification: online/store/omnichannel/unknown
+- LOCATION_UNKNOWN_ACTIONABLE metric (online-only unknown geography is separated)
+- canonical exact dedupe normalization
+- corroborating source evidence retained for cross-source duplicates
+- quality metrics: verified/partial/active/expired/expiry-unknown/channel/corroborated
+
+CORE_RULES_UNCHANGED:
+- Standalone project
+- Unknown stays unknown
+- No ranking/recommendation authority
+- No external project dependency
+- Versioned promo_offer_v1 output
+
+LIVE_ACCEPTANCE:
+- SOURCE_FOUND=23
+- FINAL_RESULT=PASS
+- CONTRACT_ERRORS=0
+- DIAGNOSTICS file created
+- Failed/zero-offer sources named
+- Compare FETCH_FAILED against P4 Wave A baseline=6
+- Evaluate LOCATION_UNKNOWN_ACTIONABLE separately from total LOCATION_UNKNOWN

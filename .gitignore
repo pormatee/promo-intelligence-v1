@@ -1,0 +1,14 @@
+data/
+output/
+promo_consumer.html
+promo_lab.html
+promo_frontend.html
+__pycache__/
+*.pyc
+*.log
+*.bak
+*.zip
+*.db
+*.sqlite*
+.env
+.env.*

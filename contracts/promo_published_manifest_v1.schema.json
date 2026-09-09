@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "promo_published_manifest_v1",
+  "title": "Promo Published Manifest V1",
+  "type": "object",
+  "required": [
+    "contract",
+    "publication_id",
+    "published_at",
+    "offer_contract",
+    "place_contract",
+    "offer_count",
+    "place_count",
+    "offer_sha256",
+    "place_sha256",
+    "files",
+    "policy"
+  ],
+  "properties": {
+    "contract": {
+      "const": "promo_published_manifest_v1"
+    },
+    "publication_id": {
+      "type": "string"
+    },
+    "published_at": {
+      "type": "string"
+    },
+    "offer_contract": {
+      "const": "promo_offer_v1"
+    },
+    "place_contract": {
+      "const": "promo_place_v1"
+    },
+    "offer_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "place_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "offer_sha256": {
+      "type": "string"
+    },
+    "place_sha256": {
+      "type": "string"
+    },
+    "files": {
+      "type": "object"
+    },
+    "policy": {
+      "type": "object"
+    },
+    "branch_place_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "merchant_branch_index_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "place_index_sha256": {
+      "type": "string"
+    }
+  }
+}

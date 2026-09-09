@@ -1,0 +1,115 @@
+[
+  {
+    "source_id": "globalhouse_store_finder",
+    "family": "globalhouse",
+    "merchant": "Global House",
+    "source_type": "official_store_locator",
+    "url": "https://globalhouse.co.th/store-finder",
+    "extractor": "globalhouse_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_bmr",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/BANGKOK-METROPOLITAN-REGION",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_central",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/CENTRAL",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_west",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/WEST",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_east",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/EAST",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_north",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/NORTH",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_northeastern",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/NORTHEASTERN",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "makro_branches_south",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_store_locator",
+    "url": "https://www.makro.co.th/th/contact-us-branch-makro/SOUTH",
+    "extractor": "makro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "homepro_branch_contact",
+    "family": "homepro",
+    "merchant": "HomePro",
+    "source_type": "official_store_locator",
+    "url": "https://www.homepro.co.th/contactus/contactus.jsp",
+    "alternate_urls": ["https://www.homepro.co.th/contactus/index.jsp"],
+    "extractor": "homepro_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "powerbuy_storelocator",
+    "family": "powerbuy",
+    "merchant": "Power Buy",
+    "source_type": "official_store_locator",
+    "url": "https://www.powerbuy.co.th/en/storelocator",
+    "alternate_urls": ["https://www.powerbuy.co.th/th/storelocator"],
+    "extractor": "powerbuy_directory",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "curl_fallback": true,
+    "enabled": true
+  }
+]
