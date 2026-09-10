@@ -1,0 +1,22 @@
+P7 Physical Store Applicability
+STATUS=CLOSED_VERIFIED
+P7_RESULT=PASS
+P7_1_BASIS_CHECK=PASS
+REGRESSION_TESTS=164
+REGRESSION_RESULT=OK
+
+PUBLISHED_OFFERS=2737
+PHYSICAL_STORE_OFFERS=20
+PHYSICAL_SELECTED_BRANCHES=8
+PHYSICAL_NATIONWIDE=5
+PHYSICAL_BRANCH_SPECIFIC=0
+PHYSICAL_UNKNOWN=7
+ONLINE_OFFERS=2717
+LOCAL_CONFIRMED_PROVINCES=1
+
+SEMANTICS:
+- Branch existence does not prove offer applicability.
+- Parent campaign scope may be inherited only from explicit official evidence.
+- selected_branches means participating branches are confirmed, but individual provinces are not implied.
+- Unknown remains unknown.
+- Final metrics use Published Read Model only.

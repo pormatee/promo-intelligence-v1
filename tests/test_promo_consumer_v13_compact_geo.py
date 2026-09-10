@@ -22,7 +22,7 @@ class ConsumerV13CompactGeoTests(unittest.TestCase):
         self.assertIn('advancedToggle', h)
         self.assertIn('advancedFilters', h)
         self.assertIn('refreshProvinceOptions()', h)
-        self.assertIn('regionSetForOffer', h)
+        self.assertIn('localRegionSetForOffer', h)
         self.assertIn('filterResultMini', h)
         self.assertIn('min-height:40px', h)
         self.assertIn('display:flex;overflow:auto', h)
