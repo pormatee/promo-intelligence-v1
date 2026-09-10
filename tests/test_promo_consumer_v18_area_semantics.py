@@ -47,7 +47,7 @@ class T(unittest.TestCase):
     def test_area_breakdown_ui_present(self):
         h=b.build_html({'publication_id':'x'},[],[],{})
         self.assertIn('id="areaBreakdown"',h)
-        self.assertIn('ยืนยันในพื้นที่',h)
+        self.assertIn('ยืนยันเฉพาะพื้นที่',h)
         self.assertIn('ออนไลน์ไม่ถูกนับเป็นโปรของจังหวัดโดยอัตโนมัติ',h)
         self.assertIn("PROMO_CONSUMER_VERSION=1.8", (ROOT/'build_promo_consumer.py').read_text())
 

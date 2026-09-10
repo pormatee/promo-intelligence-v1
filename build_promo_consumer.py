@@ -439,7 +439,15 @@ function selectedAreaClass(o){
   return 'other';
 }
 function areaOk(o){const c=selectedAreaClass(o);return c==='all'||c==='local'||c==='nationwide'}
-function statusLocation(o){const a=app(o), gs=geo(o).locations||[]; if(a.channel==='online')return 'ออนไลน์'; if(a.scope==='nationwide')return 'ทั่วประเทศ'; if(gs.length){const g=gs[0];return [g.branch_name,g.district,g.province_raw||g.province].filter(Boolean).join(' · ')||'มีข้อมูลพื้นที่'} return 'ยังไม่ระบุพื้นที่'}
+function statusLocation(o){
+  const a=app(o), gs=geo(o).locations||[];
+  if(a.channel==='online')return 'ออนไลน์';
+  if(a.scope==='nationwide')return 'ทั่วประเทศ';
+  if(a.scope==='selected_branches')return 'หน้าร้านที่ร่วมรายการ · ต้องตรวจสาขา';
+  if(a.scope==='branch_specific'&&!gs.length)return 'สาขาเฉพาะ · ต้องตรวจรายละเอียด';
+  if(gs.length){const g=gs[0];return [g.branch_name,g.district,g.province_raw||g.province].filter(Boolean).join(' · ')||'มีข้อมูลพื้นที่'}
+  return 'ยังไม่ระบุพื้นที่';
+}
 function merchantOptions(){return [...new Set(O.map(o=>val(o.merchant,'name')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'))} function placeMerchantOptions(){return [...new Set(P.map(p=>val(p.merchant,'name')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'))}
 function normProvince(x){return String(x||'').trim().toLowerCase().replace(/\s+province$/,'').replace(/\s+/g,' ')}
 function canonicalProvince(x){const n=normProvince(x);return GEO.aliases?.[n]||String(x||'').trim()}
@@ -456,17 +464,40 @@ function offerOk(o){return offerOkNonArea(o)&&areaOk(o)}
 function areaBreakdown(){
   const pv=$('province').value,rid=$('region').value,box=$('areaBreakdown');
   if(!pv&&!rid){box.classList.remove('show');box.textContent='';return}
-  const base=O.filter(offerOkNonArea);let local=0,nationwide=0,online=0;
-  for(const o of base){const c=selectedAreaClass(o);if(c==='local')local++;else if(c==='nationwide')nationwide++;else if(c==='online')online++}
+  const base=O.filter(offerOkNonArea);
+  let local=0,nationwide=0,online=0,storeCheck=0,storeUnknown=0;
+  for(const o of base){
+    const c=selectedAreaClass(o),a=app(o);
+    if(c==='local')local++;
+    else if(c==='nationwide')nationwide++;
+    else if(c==='online')online++;
+    if(a.channel!=='online'&&a.scope==='selected_branches')storeCheck++;
+    if(a.channel!=='online'&&a.scope==='unknown')storeUnknown++;
+  }
   const label=pv||((GEO.regions||[]).find(r=>r.id===rid)?.label||'พื้นที่ที่เลือก');
-  box.innerHTML=`<b>${esc(label)}</b> · ยืนยันในพื้นที่ ${fmt(local)} · ทั่วประเทศ ${fmt(nationwide)} · ออนไลน์ ${fmt(online)} <span style="opacity:.75">(ออนไลน์ไม่ถูกนับเป็นโปรของจังหวัดโดยอัตโนมัติ)</span>`;
+  const usable=local+nationwide;
+  box.innerHTML=`<b>${esc(label)}</b> · ใช้ได้ตามหลักฐาน ${fmt(usable)} โปร<br>`+
+    `ยืนยันเฉพาะพื้นที่ ${fmt(local)} · ทั่วประเทศ ${fmt(nationwide)} · `+
+    `หน้าร้านที่ร่วมรายการ (ยังไม่ยืนยันจังหวัด) ${fmt(storeCheck)} · ออนไลน์ ${fmt(online)}`+
+    `<br><span style="opacity:.78">พื้นที่ = ${fmt(local)} หมายถึงโปรที่มีหลักฐานผูกกับพื้นที่นี้โดยตรง · `+
+    `ถ้าเป็น 0 ไม่ได้แปลว่าไม่มีโปรโมชั่น แต่แปลว่ายังไม่มีหลักฐานยืนยันระดับพื้นที่ `+
+    `และโปรออนไลน์ไม่ถูกนับเป็นโปรของจังหวัดโดยอัตโนมัติ</span>`;
   box.classList.add('show');
 }
 function offerSort(a,b){const s=$('sort').value;if(s==='discount')return (priceDisplay(b).discount??-1)-(priceDisplay(a).discount??-1);if(s==='price')return (priceDisplay(a).promo??1e99)-(priceDisplay(b).promo??1e99);if(s==='expiry')return String(val(a.validity,'end')||'9999').localeCompare(String(val(b.validity,'end')||'9999'));if(s==='merchant')return String(val(a.merchant,'name')||'').localeCompare(String(val(b.merchant,'name')||''),'th');return String(observed(b)).localeCompare(String(observed(a)))}
 function typeLabel(t){return ({price_discount:'ลดราคา',special_price:'ราคาพิเศษ',coupon:'คูปอง',bundle:'ซื้อเป็นชุด',buy_x_get_y:'ซื้อ X แถม Y'}[t]||t||'โปรโมชั่น')}
 function priceHtml(o){const p=priceDisplay(o);if(p.promo==null)return `<div class="pricebox"><span class="pill">${esc(typeLabel(o.offer_type))}</span></div><div class="priceNote">ไม่มีราคาโปรที่ยืนยันสำหรับรายการนี้</div>`;return `<div class="pricebox"><span class="promo">${money(p.promo)}</span>${p.regular!=null?`<span class="regular">${money(p.regular)}</span>`:''}${p.discount!=null?`<span class="discount">-${Number(p.discount).toFixed(0)}%</span>`:''}</div>${p.regular==null&&o.offer_type==='special_price'?'<div class="priceNote">แสดงเฉพาะราคาโปรที่มีหลักฐาน · ไม่คำนวณส่วนลดเมื่อราคาปกติยังไม่ยืนยัน</div>':''}`}
 function card(o){const p=priceDisplay(o),v=verify(o),a=app(o),d=disp(o), fav=saved.has(o.offer_id);return `<article class="card"><button class="fav ${fav?'on':''}" data-save="${esc(o.offer_id)}" title="บันทึก">★</button><div class="topline"><span class="merchant">${esc(val(o.merchant,'name')||'-')}</span><span class="pill">${esc(typeLabel(o.offer_type))}</span></div><div class="title">${esc(displayTitle(o))}</div><div class="desc">${esc(displayDesc(o))}</div>${priceHtml(o)}<div class="meta">📅 ${dateText(val(o.validity,'start'))} – ${dateText(val(o.validity,'end'))}<br>📍 ${esc(statusLocation(o))} · ${esc(a.channel||'unknown')}</div><div class="badges"><span class="badge ${v.verification_state==='verified'?'good':'warn'}">${esc(v.verification_state||'unknown')}</span><span class="badge ${p.state==='verified'?'good':p.state==='partial'?'warn':''}">ราคา: ${esc(p.state)}</span>${d.title_fallback?'<span class="badge info">ชื่อแสดงผลปรับให้อ่านง่าย</span>':''}${d.technical_payload_hidden?'<span class="badge info">ซ่อนข้อมูลเทคนิค</span>':''}${(p.anomalies||[]).length?`<span class="badge warn">ตรวจราคา ${p.anomalies.length} จุด</span>`:''}${a.scope==='nationwide'?'<span class="badge info">ทั่วประเทศ</span>':''}</div><div class="actions"><button class="primary" data-detail="${esc(o.offer_id)}">ดูรายละเอียด</button>${source(o).url?`<a href="${esc(source(o).url)}" target="_blank" rel="noopener">เปิดแหล่งข้อมูล</a>`:''}</div></article>`}
-function renderOffers(){let a=O.filter(offerOk).sort(offerSort), s=a.slice(0,state.limit);areaBreakdown();$('filterResultMini').textContent=`พบ ${fmt(a.length)} โปร`;$('offerCount').textContent=`พบ ${fmt(a.length)} โปรโมชั่นตามตัวกรอง`;$('offerHint').textContent=a.length?`กำลังแสดง ${fmt(s.length)} จาก ${fmt(a.length)} รายการ`:'';$('offerCards').innerHTML=s.length?s.map(card).join(''):'<div class="empty">ไม่พบโปรโมชั่นที่ยืนยันว่าใช้ได้ในพื้นที่นี้ หรือเป็นโปรทั่วประเทศตามเงื่อนไขปัจจุบัน</div>';$('offerMore').style.display=a.length>s.length?'block':'none'}
+function renderOffers(){
+  let a=O.filter(offerOk).sort(offerSort), s=a.slice(0,state.limit);
+  const areaSelected=Boolean($('province').value||$('region').value);
+  areaBreakdown();
+  $('filterResultMini').textContent=areaSelected?`ใช้ได้ตามหลักฐาน ${fmt(a.length)} โปร`:`พบ ${fmt(a.length)} โปร`;
+  $('offerCount').textContent=areaSelected?`โปรที่ใช้ได้ตามหลักฐานในพื้นที่ที่เลือก ${fmt(a.length)} รายการ`:`พบ ${fmt(a.length)} โปรโมชั่นตามตัวกรอง`;
+  $('offerHint').textContent=a.length?`กำลังแสดง ${fmt(s.length)} จาก ${fmt(a.length)} รายการ`:'';
+  $('offerCards').innerHTML=s.length?s.map(card).join(''):'<div class="empty">ยังไม่พบโปรโมชั่นที่มีหลักฐานยืนยันว่าใช้ได้ในพื้นที่นี้ หรือเป็นโปรทั่วประเทศตามเงื่อนไขปัจจุบัน</div>';
+  $('offerMore').style.display=a.length>s.length?'block':'none';
+}
 function placeOk(p){const q=$('placeSearch').value.trim().toLowerCase();if(q&&!placeText(p).includes(q))return false;if($('placeMerchant').value&&val(p.merchant,'name')!==$('placeMerchant').value)return false;if($('placeKind').value&&p.record_kind!==$('placeKind').value)return false;const l=p.location||{};if($('placeProvince').value&&l.province!==$('placeProvince').value)return false;return true}
 function placeCard(p){const l=p.location||{},b=p.branch||{},v=p.verification||{};return `<article class="placeCard"><div class="topline"><span class="merchant">${esc(val(p.merchant,'name')||'-')}</span><span class="pill">${esc(p.record_kind||'-')}</span></div><h3>${esc(b.name||val(p.merchant,'name')||'สถานที่')}</h3><p>📍 ${esc([l.subdistrict,l.district,l.province].filter(Boolean).join(' · ')||'ยังไม่มีรายละเอียดพื้นที่')}<br>${l.address?`🏠 ${esc(l.address)}<br>`:''}ความละเอียด: ${esc(p.precision||'unknown')} · หลักฐาน: ${fmt(p.evidence_count??(p.evidence||[]).length)}</p><div class="badges"><span class="badge ${v.state==='verified'?'good':'warn'}">${esc(v.state||'unknown')}</span>${l.postal_code?'<span class="badge info">รหัสไปรษณีย์</span>':''}${l.latitude!=null&&l.longitude!=null?'<span class="badge good">พิกัด</span>':''}</div></article>`}
 function renderPlaces(){let a=P.filter(placeOk),s=a.slice(0,state.placeLimit);$('placeCount').textContent=`พบ ${fmt(a.length)} สถานที่`;$('placeHint').textContent=a.length>s.length?`แสดง ${fmt(s.length)} รายการแรก`:'';$('placeCards').innerHTML=s.length?s.map(placeCard).join(''):'<div class="empty">ไม่พบสถานที่</div>';$('placeMore').style.display=a.length>s.length?'block':'none'}
