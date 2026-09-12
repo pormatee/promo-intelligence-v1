@@ -130,5 +130,20 @@
     "reliability": "high",
     "timeout_seconds": 15,
     "enabled": true
+  },
+  {
+    "source_id": "globalhouse_kabinburi_detail",
+    "family": "globalhouse",
+    "merchant": "Global House",
+    "source_type": "official_branch_detail",
+    "url": "https://globalhouse.co.th/store-finder/kabin-buri",
+    "extractor": "globalhouse_branch_detail",
+    "branch_name": "กบินทร์บุรี",
+    "province": "ปราจีนบุรี",
+    "province_token": "จังหวัดปราจีนบุรี",
+    "heading_token": "โกลบอลเฮ้าส์ สาขากบินทร์บุรี",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
   }
 ]

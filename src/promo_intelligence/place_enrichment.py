@@ -120,6 +120,140 @@ def extract_globalhouse(source: dict, body: bytes) -> list[dict]:
     return out
 
 
+def extract_globalhouse_detail(source: dict, body: bytes) -> list[dict]:
+    # Prefer structured PostalAddress from official JSON-LD.
+    # Keep the address human-readable and deduplicate locality/province/postcode
+    # already present inside streetAddress.
+    # Branch name alone never becomes province evidence.
+    raw = body.decode("utf-8", errors="replace")
+    branch_name = _clean(source.get("branch_name"))
+    province = _clean(source.get("province"))
+    slug_hint = _clean(source.get("url")).rstrip("/").split("/")[-1].casefold()
+    heading_token = _clean(source.get("heading_token"))
+    province_token = _clean(source.get("province_token")) or province
+
+    if not branch_name or not province:
+        return []
+
+    scripts = re.findall(
+        r'<script\b[^>]*\btype\s*=\s*["\']application/ld\+json["\'][^>]*>(.*?)</script>',
+        raw,
+        flags=re.I | re.S,
+    )
+
+    def walk(value):
+        if isinstance(value, dict):
+            yield value
+            for child in value.values():
+                yield from walk(child)
+        elif isinstance(value, list):
+            for child in value:
+                yield from walk(child)
+
+    def norm(value: str | None) -> str:
+        return re.sub(r"[\s,]+", "", _clean(value)).casefold()
+
+    def build_clean_address(address: dict) -> str:
+        street = _clean(address.get("streetAddress"))
+        locality = _clean(address.get("addressLocality"))
+        region = _clean(address.get("addressRegion"))
+        postal = _clean(address.get("postalCode"))
+
+        parts = [street] if street else []
+        whole = norm(street)
+
+        for value in (locality, region, postal):
+            if not value:
+                continue
+            nv = norm(value)
+            if nv and nv not in whole:
+                parts.append(value)
+                whole += nv
+
+        return ", ".join(parts)
+
+    for blob in scripts:
+        try:
+            data = json.loads(blob.strip())
+        except Exception:
+            continue
+
+        for obj in walk(data):
+            address = obj.get("address")
+            if not isinstance(address, dict):
+                continue
+
+            region = _clean(address.get("addressRegion"))
+            postal = _clean(address.get("postalCode"))
+            if region != province or not re.fullmatch(r"\d{5}", postal or ""):
+                continue
+
+            name = _clean(obj.get("name"))
+            url = _clean(obj.get("url")).casefold()
+            description = _clean(obj.get("description"))
+
+            if not (
+                branch_name.casefold() in name.casefold()
+                or branch_name.casefold() in description.casefold()
+                or (slug_hint and slug_hint in url)
+            ):
+                continue
+
+            clean_address = build_clean_address(address)
+            forbidden = ("acceptedAnswer", "@type", "FAQPage", "Question", "description", "schema.org")
+
+            if (
+                clean_address
+                and len(clean_address) <= 350
+                and not any(token.casefold() in clean_address.casefold() for token in forbidden)
+            ):
+                return [_candidate(
+                    branch_name,
+                    province=province,
+                    address=clean_address,
+                    postal_code=postal,
+                    evidence_excerpt=f"{name or branch_name} | {clean_address}",
+                )]
+
+    # Backward-compatible explicit HTML fallback for older fixtures/pages.
+    lines, _ = html_blocks(body)
+    heading_cf = (heading_token or branch_name).casefold()
+    heading_index = None
+
+    for i, line in enumerate(lines):
+        if heading_cf in _clean(line).casefold():
+            heading_index = i
+            break
+
+    if heading_index is None:
+        return []
+
+    province_cf = province_token.casefold()
+    forbidden = ("acceptedAnswer", "@type", "FAQPage", "Question", "description", "schema.org", "{", "}")
+
+    for raw_line in lines[heading_index + 1:heading_index + 10]:
+        line = _clean(raw_line)
+        if not line or len(line) > 350:
+            continue
+
+        pc = re.search(r"\b(\d{5})\b", line)
+        if not pc or province_cf not in line.casefold():
+            continue
+        if branch_name.casefold() not in line.casefold():
+            continue
+        if any(token.casefold() in line.casefold() for token in forbidden):
+            continue
+
+        return [_candidate(
+            branch_name,
+            province=province,
+            address=line,
+            postal_code=pc.group(1),
+            evidence_excerpt=f"{heading_token or branch_name} | {line}",
+        )]
+
+    return []
+
 def extract_makro(source: dict, body: bytes) -> list[dict]:
     lines, _ = html_blocks(body)
     out: list[dict] = []
@@ -257,6 +391,7 @@ def extract_powerbuy(source: dict, body: bytes) -> list[dict]:
 
 EXTRACTORS = {
     "globalhouse_directory": extract_globalhouse,
+    "globalhouse_branch_detail": extract_globalhouse_detail,
     "makro_directory": extract_makro,
     "makro_branch_detail": extract_makro_detail,
     "homepro_directory": extract_homepro,
