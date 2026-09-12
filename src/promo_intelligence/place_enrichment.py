@@ -146,10 +146,27 @@ def extract_makro(source: dict, body: bytes) -> list[dict]:
 
 
 def extract_homepro(source: dict, body: bytes) -> list[dict]:
+    # Explicit locator evidence only. Branch names alone never become province evidence.
     lines, _ = html_blocks(body)
-    out: list[dict] = []
-    seen: set[str] = set()
-    for line in lines:
+    by_name: dict[str, dict] = {}
+
+    def explicit_address_after(index: int) -> tuple[str | None, str | None, str | None]:
+        for raw in lines[index + 1:index + 9]:
+            line = _clean(raw)
+            if not line:
+                continue
+            if re.match(r"^(?:โฮมโปร|เมกาโฮม)\s*", line, re.I):
+                break
+            pc = re.search(r"\b(\d{5})\b", line)
+            provinces = [p for p in THAI_PROVINCES if p in line]
+            if not pc or not provinces:
+                continue
+            province = max(provinces, key=lambda p: line.rfind(p))
+            address = re.sub(r"\s*Tel\s*:.*$", "", line, flags=re.I).strip(" ,")
+            return address or None, province, pc.group(1)
+        return None, None, None
+
+    for i, line in enumerate(lines):
         if line in {"โฮมโปรออนไลน์", "HomePro Online"}:
             continue
         m = re.match(r"โฮมโปร\s*(?:S\s*)?(.+)$", line, re.I)
@@ -158,10 +175,19 @@ def extract_homepro(source: dict, body: bytes) -> list[dict]:
         name = _clean(m.group(1))
         if not name or name in {"ออนไลน์"} or len(name) > 140:
             continue
-        if name not in seen:
-            out.append(_candidate(name, evidence_excerpt=line))
-            seen.add(name)
-    return out
+        address, province, postal_code = explicit_address_after(i)
+        candidate = _candidate(
+            name,
+            province=province,
+            address=address,
+            postal_code=postal_code,
+            evidence_excerpt=(f"{line} | {address}" if address else line),
+        )
+        key = name.casefold()
+        prev = by_name.get(key)
+        if prev is None or (not prev.get("province") and candidate.get("province")) or (not prev.get("address") and candidate.get("address")):
+            by_name[key] = candidate
+    return list(by_name.values())
 
 
 def extract_powerbuy(source: dict, body: bytes) -> list[dict]:

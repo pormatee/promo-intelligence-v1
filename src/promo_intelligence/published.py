@@ -65,13 +65,14 @@ def publish_snapshot(project_root: str | Path, offers: list[dict], places: list[
         sanitized.append(sanitize_offer_pricing(x) if has_price_gate else x)
     published_offers = [x for x in sanitized if is_publishable(x)]
     direct_place_ids = {pid for x in published_offers for pid in ([x.get("merchant_place_ref")] + list(x.get("place_refs") or [])) if pid}
-    merchant_ids = {x.get("merchant_place_ref") for x in published_offers if x.get("merchant_place_ref")}
-    # Publish the verified branch directory for merchants that have published
-    # offers. Branch existence is not offer applicability; consumers must still
-    # honor each offer's applicability/channel before joining to a branch.
-    descendant_ids = {x.get("place_id") for x in places if x.get("record_kind") == "branch" and x.get("parent_place_id") in merchant_ids}
-    place_ids = direct_place_ids | descendant_ids
-    published_places = [x for x in places if x.get("place_id") in place_ids]
+    # Place directory is an independent read model. A verified/partial place may
+    # be useful even when that merchant has no current promotion. This never
+    # implies that any offer applies to that branch.
+    published_places = [
+        x for x in places
+        if (x.get("verification") or {}).get("state") in {"verified", "partial"}
+        or x.get("place_id") in direct_place_ids
+    ]
     branch_index: dict[str, list[str]] = {}
     for place in published_places:
         if place.get("record_kind") == "branch" and place.get("parent_place_id"):
@@ -116,6 +117,7 @@ def publish_snapshot(project_root: str | Path, offers: list[dict], places: list[
             "exclude_stale": True,
             "read_only": True,
             "branch_directory_not_offer_applicability": True,
+            "place_directory_independent_of_offer_presence": True,
             "price_evidence_integrity_gate": True,
             "unsupported_price_claims_sanitized": True,
             "offer_identity_integrity_gate": True,

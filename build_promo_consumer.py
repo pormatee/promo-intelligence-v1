@@ -220,6 +220,7 @@ def prepare_place_for_consumer(place: dict[str, Any]) -> dict[str, Any]:
     ver = place.get('verification') or {}
     return {
         'place_id': place.get('place_id'),
+        'parent_place_id': place.get('parent_place_id'),
         'record_kind': place.get('record_kind'),
         'merchant': {'name': merchant.get('name')},
         'branch': {'name': branch.get('name')} if branch.get('name') else {},
@@ -352,6 +353,8 @@ button,input,select,a{touch-action:manipulation;-webkit-tap-highlight-color:rgba
 /* V1.4 compact mobile header + fast-first-view; V1.5 server-baked filter options */
 .hero{padding:10px 12px 9px}.logo{width:34px;height:34px;border-radius:11px;font-size:19px}.brand{gap:8px}.brand h1{font-size:19px}.brand p{font-size:10px;margin-top:2px}.fresh{font-size:9px;line-height:1.25;max-width:132px}.heroSearch{margin-top:8px}.heroSearch input{border-radius:12px;padding:10px 42px 10px 12px;min-height:42px;font-size:15px}.heroSearch button{position:absolute!important;right:5px!important;top:5px!important;width:32px!important;height:32px!important;min-height:32px!important;border-radius:10px;display:none;align-items:center;justify-content:center}.heroSearch button.show{display:flex}.quick{padding:7px 0 0;gap:5px}.quick button{padding:5px 9px;font-size:10px;min-height:32px!important}.toolbar{margin:6px 0;padding:7px}.filterGrid{gap:5px}.filterGrid select,.filterGrid input,.filterGrid button{padding:5px 8px;min-height:36px;font-size:11px}.advancedFilters{margin-top:5px}.subfilters{margin-top:5px}.subfilters button{min-height:29px!important;padding:4px 7px;font-size:9.5px}.filterResultMini{margin-top:5px}.sectionHead{margin-top:7px}.loadingCard{grid-column:1/-1;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted);font-size:12px}.startupHint{font-size:9px;opacity:.9}.compactSummary{display:none}
 @media(max-width:780px){.brand p{display:none}.fresh #pubText{display:none}.fresh{font-size:9px;max-width:110px}.hero{padding:9px 10px 8px}.stats{display:none!important}.app{padding-left:9px;padding-right:9px}.hero{margin-left:-9px;margin-right:-9px}.toolbar{border-radius:13px}.filterLabel{margin-bottom:3px}.filterResultMini{font-size:9px}.filterResultMini b{font-size:11px}.compactSummary{display:block;color:rgba(255,255,255,.9);font-size:9px;margin-top:2px}}
+.areaStoresSection{display:none;margin-top:10px}.areaStoresSection.show{display:block}
+.areaStoresSection{display:none;margin-top:10px}.areaStoresSection.show{display:block}
 </style>
 </head>
 <body>
@@ -381,7 +384,18 @@ button,input,select,a{touch-action:manipulation;-webkit-tap-highlight-color:rgba
     <div class="filterResultMini"><b id="filterResultMini">กำลังคำนวณผล…</b><span id="interactionStatus">แตะตัวกรองเพื่อเลือก</span></div>
     <div class="areaBreakdown" id="areaBreakdown"></div>
   </div>
-  <div class="sectionHead resultsAnchor" id="resultsAnchor"><h2 id="offerCount">โปรโมชั่น</h2><small id="offerHint"></small></div>
+  <div id=\"areaStoresSection\" class=\"areaStoresSection\">
+    <div class=\"sectionHead\"><h2 id=\"areaStoreCount\">ร้านในพื้นที่</h2><small id=\"areaStoreHint\"></small></div>
+    <div class=\"places\" id=\"areaStoreCards\"></div>
+  </div>
+  <div id="areaStoresSection" class="areaStoresSection">
+  <div class="sectionHead">
+    <h2 id="areaStoreCount">ร้านในพื้นที่</h2>
+    <small id="areaStoreHint"></small>
+  </div>
+  <div class="places" id="areaStoreCards"></div>
+</div>
+<div class="sectionHead resultsAnchor" id="resultsAnchor"><h2 id="offerCount">โปรโมชั่น</h2><small id="offerHint"></small></div>
   <div class="cards" id="offerCards"><div class="loadingCard">กำลังเตรียมรายการโปรโมชั่น…<br><span class="startupHint">ข้อมูลอยู่ในเครื่องและกำลังเปิด snapshot ล่าสุด</span></div></div><button class="more" id="offerMore">แสดงเพิ่ม</button>
 </section>
 
@@ -489,6 +503,7 @@ function typeLabel(t){return ({price_discount:'ลดราคา',special_price
 function priceHtml(o){const p=priceDisplay(o);if(p.promo==null)return `<div class="pricebox"><span class="pill">${esc(typeLabel(o.offer_type))}</span></div><div class="priceNote">ไม่มีราคาโปรที่ยืนยันสำหรับรายการนี้</div>`;return `<div class="pricebox"><span class="promo">${money(p.promo)}</span>${p.regular!=null?`<span class="regular">${money(p.regular)}</span>`:''}${p.discount!=null?`<span class="discount">-${Number(p.discount).toFixed(0)}%</span>`:''}</div>${p.regular==null&&o.offer_type==='special_price'?'<div class="priceNote">แสดงเฉพาะราคาโปรที่มีหลักฐาน · ไม่คำนวณส่วนลดเมื่อราคาปกติยังไม่ยืนยัน</div>':''}`}
 function card(o){const p=priceDisplay(o),v=verify(o),a=app(o),d=disp(o), fav=saved.has(o.offer_id);return `<article class="card"><button class="fav ${fav?'on':''}" data-save="${esc(o.offer_id)}" title="บันทึก">★</button><div class="topline"><span class="merchant">${esc(val(o.merchant,'name')||'-')}</span><span class="pill">${esc(typeLabel(o.offer_type))}</span></div><div class="title">${esc(displayTitle(o))}</div><div class="desc">${esc(displayDesc(o))}</div>${priceHtml(o)}<div class="meta">📅 ${dateText(val(o.validity,'start'))} – ${dateText(val(o.validity,'end'))}<br>📍 ${esc(statusLocation(o))} · ${esc(a.channel||'unknown')}</div><div class="badges"><span class="badge ${v.verification_state==='verified'?'good':'warn'}">${esc(v.verification_state||'unknown')}</span><span class="badge ${p.state==='verified'?'good':p.state==='partial'?'warn':''}">ราคา: ${esc(p.state)}</span>${d.title_fallback?'<span class="badge info">ชื่อแสดงผลปรับให้อ่านง่าย</span>':''}${d.technical_payload_hidden?'<span class="badge info">ซ่อนข้อมูลเทคนิค</span>':''}${(p.anomalies||[]).length?`<span class="badge warn">ตรวจราคา ${p.anomalies.length} จุด</span>`:''}${a.scope==='nationwide'?'<span class="badge info">ทั่วประเทศ</span>':''}</div><div class="actions"><button class="primary" data-detail="${esc(o.offer_id)}">ดูรายละเอียด</button>${source(o).url?`<a href="${esc(source(o).url)}" target="_blank" rel="noopener">เปิดแหล่งข้อมูล</a>`:''}</div></article>`}
 function renderOffers(){
+  renderAreaStores();
   let a=O.filter(offerOk).sort(offerSort), s=a.slice(0,state.limit);
   const areaSelected=Boolean($('province').value||$('region').value);
   areaBreakdown();
@@ -498,8 +513,51 @@ function renderOffers(){
   $('offerCards').innerHTML=s.length?s.map(card).join(''):'<div class="empty">ยังไม่พบโปรโมชั่นที่มีหลักฐานยืนยันว่าใช้ได้ในพื้นที่นี้ หรือเป็นโปรทั่วประเทศตามเงื่อนไขปัจจุบัน</div>';
   $('offerMore').style.display=a.length>s.length?'block':'none';
 }
+function branchMerchantId(p){return p.record_kind==='branch'?(p.parent_place_id||null):(p.record_kind==='merchant'?p.place_id:null)}
+function confirmedOffersForPlace(p){
+  const pid=p.place_id,mid=branchMerchantId(p),out=[],seen=new Set();
+  for(const o of O){
+    const a=app(o),refs=o.place_refs||[],om=o.merchant_place_ref||null;
+    if(!['store','omnichannel'].includes(a.channel))continue;
+    let ok=false;
+    if(pid&&refs.includes(pid))ok=true;
+    else if(mid&&om===mid&&a.scope==='nationwide')ok=true;
+    if(ok&&!seen.has(o.offer_id)){seen.add(o.offer_id);out.push(o)}
+  }
+  return out;
+}
+function selectedAreaPlaces(){
+  const pv=$('province').value,rid=$('region').value;
+  if(!pv&&!rid)return [];
+  return P.filter(p=>{
+    if(p.record_kind!=='branch')return false;
+    const province=canonicalProvince(val(p.location,'province'));
+    if(!province)return false;
+    if(pv)return province===canonicalProvince(pv);
+    return regionIdForProvince(province)===rid;
+  });
+}
+function areaStoreCard(p){
+  const l=p.location||{},b=p.branch||{},v=p.verification||{},offers=confirmedOffersForPlace(p);
+  const name=val(p.merchant,'name')||'-';
+  const promo=offers.length?`<span class="badge good">มีโปรยืนยัน ${fmt(offers.length)}</span>`:'<span class="badge warn">ยังไม่พบโปรที่ยืนยัน</span>';
+  return `<article class="placeCard"><div class="topline"><span class="merchant">${esc(name)}</span><span class="pill">สาขา</span></div><h3>${esc(b.name||name||'สถานที่')}</h3><p>📍 ${esc([l.subdistrict,l.district,l.province].filter(Boolean).join(' · ')||'ยังไม่มีรายละเอียดพื้นที่')}${l.address?`<br>🏠 ${esc(l.address)}`:''}</p><div class="badges">${promo}<span class="badge ${v.state==='verified'?'good':'warn'}">สาขา: ${esc(v.state||'unknown')}</span></div></article>`;
+}
+function renderAreaStores(){
+  const box=$('areaStoresSection');if(!box)return;
+  const pv=$('province').value,rid=$('region').value;
+  if(!pv&&!rid){box.classList.remove('show');$('areaStoreCards').innerHTML='';return}
+  const rows=selectedAreaPlaces();
+  const merchants=new Set(rows.map(p=>val(p.merchant,'name')).filter(Boolean));
+  const withPromo=rows.filter(p=>confirmedOffersForPlace(p).length>0).length;
+  const label=pv||((GEO.regions||[]).find(r=>r.id===rid)?.label||'พื้นที่ที่เลือก');
+  $('areaStoreCount').textContent=`ร้านและสาขาที่พบใน ${label}: ${fmt(rows.length)}`;
+  $('areaStoreHint').textContent=`${fmt(merchants.size)} ร้าน · ${fmt(withPromo)} สาขามีโปรที่ยืนยัน`;
+  $('areaStoreCards').innerHTML=rows.length?rows.map(areaStoreCard).join(''):'<div class="empty">ยังไม่มีสาขาที่ Published ยืนยันในพื้นที่นี้</div>';
+  box.classList.add('show');
+}
 function placeOk(p){const q=$('placeSearch').value.trim().toLowerCase();if(q&&!placeText(p).includes(q))return false;if($('placeMerchant').value&&val(p.merchant,'name')!==$('placeMerchant').value)return false;if($('placeKind').value&&p.record_kind!==$('placeKind').value)return false;const l=p.location||{};if($('placeProvince').value&&l.province!==$('placeProvince').value)return false;return true}
-function placeCard(p){const l=p.location||{},b=p.branch||{},v=p.verification||{};return `<article class="placeCard"><div class="topline"><span class="merchant">${esc(val(p.merchant,'name')||'-')}</span><span class="pill">${esc(p.record_kind||'-')}</span></div><h3>${esc(b.name||val(p.merchant,'name')||'สถานที่')}</h3><p>📍 ${esc([l.subdistrict,l.district,l.province].filter(Boolean).join(' · ')||'ยังไม่มีรายละเอียดพื้นที่')}<br>${l.address?`🏠 ${esc(l.address)}<br>`:''}ความละเอียด: ${esc(p.precision||'unknown')} · หลักฐาน: ${fmt(p.evidence_count??(p.evidence||[]).length)}</p><div class="badges"><span class="badge ${v.state==='verified'?'good':'warn'}">${esc(v.state||'unknown')}</span>${l.postal_code?'<span class="badge info">รหัสไปรษณีย์</span>':''}${l.latitude!=null&&l.longitude!=null?'<span class="badge good">พิกัด</span>':''}</div></article>`}
+function placeCard(p){const l=p.location||{},b=p.branch||{},v=p.verification||{},os=p.record_kind==='branch'?confirmedOffersForPlace(p):[];const promo=p.record_kind==='branch'?(os.length?`<span class="badge good">มีโปรยืนยัน ${fmt(os.length)}</span>`:'<span class="badge warn">ยังไม่พบโปรที่ยืนยัน</span>'):'';return `<article class="placeCard"><div class="topline"><span class="merchant">${esc(val(p.merchant,'name')||'-')}</span><span class="pill">${esc(p.record_kind||'-')}</span></div><h3>${esc(b.name||val(p.merchant,'name')||'สถานที่')}</h3><p>📍 ${esc([l.subdistrict,l.district,l.province].filter(Boolean).join(' · ')||'ยังไม่มีรายละเอียดพื้นที่')}<br>${l.address?`🏠 ${esc(l.address)}<br>`:''}ความละเอียด: ${esc(p.precision||'unknown')} · หลักฐาน: ${fmt(p.evidence_count??(p.evidence||[]).length)}</p><div class="badges">${promo}<span class="badge ${v.state==='verified'?'good':'warn'}">${esc(v.state||'unknown')}</span>${l.postal_code?'<span class="badge info">รหัสไปรษณีย์</span>':''}${l.latitude!=null&&l.longitude!=null?'<span class="badge good">พิกัด</span>':''}</div></article>`}
 function renderPlaces(){let a=P.filter(placeOk),s=a.slice(0,state.placeLimit);$('placeCount').textContent=`พบ ${fmt(a.length)} สถานที่`;$('placeHint').textContent=a.length>s.length?`แสดง ${fmt(s.length)} รายการแรก`:'';$('placeCards').innerHTML=s.length?s.map(placeCard).join(''):'<div class="empty">ไม่พบสถานที่</div>';$('placeMore').style.display=a.length>s.length?'block':'none'}
 function renderSaved(){const a=O.filter(o=>saved.has(o.offer_id));$('savedCards').innerHTML=a.length?a.map(card).join(''):'<div class="empty">ยังไม่มีโปรที่บันทึกไว้</div>'}
 function renderStats(){const priceVerified=O.filter(o=>priceDisplay(o).state==='verified'&&priceDisplay(o).promo!=null).length, branches=P.filter(p=>p.record_kind==='branch').length;$('stats').innerHTML=[[O.length,'โปรโมชั่นที่เผยแพร่'],[priceVerified,'โปรที่ราคายืนยัน'],[P.length,'สถานที่ทั้งหมด'],[branches,'สาขาที่พบ']].map(([n,l])=>`<div class="stat"><b>${fmt(n)}</b><span>${l}</span></div>`).join('')}

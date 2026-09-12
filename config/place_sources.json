@@ -92,8 +92,11 @@
     "family": "homepro",
     "merchant": "HomePro",
     "source_type": "official_store_locator",
-    "url": "https://www.homepro.co.th/contactus/contactus.jsp",
-    "alternate_urls": ["https://www.homepro.co.th/contactus/index.jsp"],
+    "url": "https://www.homepro.co.th/store/finder.jsp",
+    "alternate_urls": [
+      "https://www.homepro.co.th/contactus/index.jsp",
+      "https://www.homepro.co.th/contactus/contactus.jsp"
+    ],
     "extractor": "homepro_directory",
     "reliability": "high",
     "timeout_seconds": 15,
@@ -105,7 +108,9 @@
     "merchant": "Power Buy",
     "source_type": "official_store_locator",
     "url": "https://www.powerbuy.co.th/en/storelocator",
-    "alternate_urls": ["https://www.powerbuy.co.th/th/storelocator"],
+    "alternate_urls": [
+      "https://www.powerbuy.co.th/th/storelocator"
+    ],
     "extractor": "powerbuy_directory",
     "reliability": "high",
     "timeout_seconds": 15,
