@@ -145,5 +145,39 @@
     "reliability": "high",
     "timeout_seconds": 15,
     "enabled": true
+  },
+  {
+    "source_id": "bigc_srimahaphot_current",
+    "family": "bigc",
+    "merchant": "Big C",
+    "source_type": "official_branch_detail",
+    "url": "https://corporate.bigc.co.th/campaign/776/Call-Chat-Shop?site=2",
+    "extractor": "bigc_branch_evidence",
+    "branch_name": "ศรีมหาโพธิ",
+    "province": "ปราจีนบุรี",
+    "branch_tokens": [
+      "BigC ศรีมหาโพธิ"
+    ],
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
+  },
+  {
+    "source_id": "bigc_srimahaphot_address",
+    "family": "bigc",
+    "merchant": "Big C",
+    "source_type": "official_branch_detail",
+    "url": "https://corporate.bigc.co.th/campaign/1993/Hot-Sale-7-Day-Only-for-East",
+    "extractor": "bigc_branch_evidence",
+    "branch_name": "ศรีมหาโพธิ",
+    "province": "ปราจีนบุรี",
+    "branch_tokens": [
+      "บิ๊กซี-ศรีมหาโพธิ",
+      "BigC ศรีมหาโพธิ"
+    ],
+    "postal_code": "25140",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
   }
 ]

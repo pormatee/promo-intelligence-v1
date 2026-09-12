@@ -365,6 +365,92 @@ def extract_homepro(source: dict, body: bytes) -> list[dict]:
     return list(by_name.values())
 
 
+def extract_bigc_branch(source: dict, body: bytes) -> list[dict]:
+    class _Rows(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.in_row = False
+            self.in_cell = False
+            self.parts = []
+            self.cells = []
+            self.rows = []
+
+        def handle_starttag(self, tag, attrs):
+            tag = tag.casefold()
+            if tag == "tr":
+                self.in_row = True
+                self.in_cell = False
+                self.parts = []
+                self.cells = []
+            elif self.in_row and tag in {"td", "th"}:
+                self.in_cell = True
+                self.parts = []
+
+        def handle_data(self, data):
+            if self.in_row and self.in_cell:
+                self.parts.append(data)
+
+        def handle_endtag(self, tag):
+            tag = tag.casefold()
+            if self.in_row and tag in {"td", "th"} and self.in_cell:
+                self.cells.append(_clean("".join(self.parts)))
+                self.parts = []
+                self.in_cell = False
+            elif tag == "tr" and self.in_row:
+                if any(self.cells):
+                    self.rows.append(self.cells[:])
+                self.in_row = False
+                self.in_cell = False
+                self.parts = []
+                self.cells = []
+
+    branch_name = _clean(source.get("branch_name"))
+    province = _clean(source.get("province"))
+    tokens = source.get("branch_tokens") or [source.get("branch_token")]
+    tokens = [_clean(x) for x in tokens if _clean(x)]
+    expected_postal = _clean(source.get("postal_code"))
+
+    if not branch_name or not province or not tokens:
+        return []
+
+    p = _Rows()
+    p.feed(body.decode("utf-8", errors="replace"))
+
+    for cells in p.rows:
+        row_text = " | ".join(x for x in cells if x)
+        token = next((t for t in tokens if t.casefold() in row_text.casefold()), None)
+        if not token or province.casefold() not in row_text.casefold():
+            continue
+
+        address = None
+        postal = None
+        if expected_postal:
+            if expected_postal not in row_text:
+                continue
+            postal = expected_postal
+            for cell in cells:
+                c = _clean(cell).strip(" |,")
+                if (
+                    "เลขที่" in c
+                    and province.casefold() in c.casefold()
+                    and expected_postal in c
+                    and len(c) <= 350
+                ):
+                    address = c
+                    break
+            if address is None:
+                continue
+
+        return [_candidate(
+            branch_name,
+            province=province,
+            address=address,
+            postal_code=postal,
+            evidence_excerpt=(f"{token} | {address}" if address else row_text[:500]),
+        )]
+
+    return []
+
 def extract_powerbuy(source: dict, body: bytes) -> list[dict]:
     lines, _ = html_blocks(body)
     out: list[dict] = []
@@ -395,6 +481,7 @@ EXTRACTORS = {
     "makro_directory": extract_makro,
     "makro_branch_detail": extract_makro_detail,
     "homepro_directory": extract_homepro,
+    "bigc_branch_evidence": extract_bigc_branch,
     "powerbuy_directory": extract_powerbuy,
 }
 
