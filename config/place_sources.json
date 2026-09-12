@@ -116,5 +116,19 @@
     "timeout_seconds": 15,
     "curl_fallback": true,
     "enabled": true
+  },
+  {
+    "source_id": "makro_prachinburi_detail",
+    "family": "makro",
+    "merchant": "Makro PRO",
+    "source_type": "official_branch_detail",
+    "url": "https://www.makro.co.th/en/contact-us/154/index.php",
+    "extractor": "makro_branch_detail",
+    "branch_name": "ปราจีนบุรี",
+    "province": "ปราจีนบุรี",
+    "province_token": "Prachinburi",
+    "reliability": "high",
+    "timeout_seconds": 15,
+    "enabled": true
   }
 ]

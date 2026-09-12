@@ -145,6 +145,47 @@ def extract_makro(source: dict, body: bytes) -> list[dict]:
     return out
 
 
+def extract_makro_detail(source: dict, body: bytes) -> list[dict]:
+    """Extract one explicitly identified Makro branch detail page.
+
+    Safety rule: configured canonical province is accepted only when the
+    official page itself contains the configured explicit province token in
+    both the branch heading and a nearby postal address. No branch-name-only
+    inference is allowed.
+    """
+    lines, _ = html_blocks(body)
+    branch_name = _clean(source.get("branch_name"))
+    province = _clean(source.get("province"))
+    token = _clean(source.get("province_token"))
+    if not branch_name or not province or not token:
+        return []
+
+    token_cf = token.casefold()
+    heading_index = None
+    for i, line in enumerate(lines):
+        if _clean(line).casefold() == token_cf:
+            heading_index = i
+            break
+    if heading_index is None:
+        return []
+
+    for raw in lines[heading_index + 1:heading_index + 9]:
+        line = _clean(raw)
+        if not line:
+            continue
+        pc = re.search(r"\b(\d{5})\b", line)
+        if not pc or token_cf not in line.casefold():
+            continue
+        return [_candidate(
+            branch_name,
+            province=province,
+            address=line,
+            postal_code=pc.group(1),
+            evidence_excerpt=f"{token} | {line}",
+        )]
+    return []
+
+
 def extract_homepro(source: dict, body: bytes) -> list[dict]:
     # Explicit locator evidence only. Branch names alone never become province evidence.
     lines, _ = html_blocks(body)
@@ -217,6 +258,7 @@ def extract_powerbuy(source: dict, body: bytes) -> list[dict]:
 EXTRACTORS = {
     "globalhouse_directory": extract_globalhouse,
     "makro_directory": extract_makro,
+    "makro_branch_detail": extract_makro_detail,
     "homepro_directory": extract_homepro,
     "powerbuy_directory": extract_powerbuy,
 }
