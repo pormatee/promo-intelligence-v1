@@ -451,6 +451,90 @@ def extract_bigc_branch(source: dict, body: bytes) -> list[dict]:
 
     return []
 
+
+def extract_lotus_current_branch(source: dict, body: bytes) -> list[dict]:
+    # First-party My Lotus's page proves current branch existence only.
+    # A province-looking branch name never becomes province evidence here.
+    lines, _ = html_blocks(body)
+    branch_name = _clean(source.get("branch_name"))
+    token = _clean(source.get("branch_token"))
+    if not branch_name or not token:
+        return []
+    token_cf = token.casefold()
+    for raw in lines:
+        line = _clean(raw)
+        if token_cf in line.casefold():
+            return [_candidate(branch_name, evidence_excerpt=token)]
+    raw_text = body.decode("utf-8", errors="replace")
+    if token_cf in raw_text.casefold():
+        return [_candidate(branch_name, evidence_excerpt=token)]
+    return []
+
+
+def extract_lotus_tenant_location(source: dict, body: bytes) -> list[dict]:
+    # Cross-source corroboration only; this is not Lotus first-party address evidence.
+    # Require an exact tenant-store marker, then an explicit address label and an
+    # address containing the configured province + postcode before the next store.
+    class _VisibleText(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.parts: list[str] = []
+        def handle_starttag(self, tag, attrs):
+            if tag.casefold() == "br" or tag.casefold() in BLOCK_TAGS:
+                self.parts.append("\n")
+        def handle_endtag(self, tag):
+            if tag.casefold() in BLOCK_TAGS:
+                self.parts.append("\n")
+        def handle_data(self, data):
+            self.parts.append(data)
+
+    branch_name = _clean(source.get("branch_name"))
+    page_token = _clean(source.get("page_token"))
+    province = _clean(source.get("province"))
+    province_token = _clean(source.get("province_evidence_token"))
+    postal_code = _clean(source.get("postal_code"))
+    address_label = _clean(source.get("address_label")) or "ที่อยู่:"
+    next_store_prefix = _clean(source.get("next_store_prefix")) or "dtac center"
+    if (
+        not branch_name or not page_token or not province or province not in THAI_PROVINCES
+        or not province_token or not re.fullmatch(r"\d{5}", postal_code)
+    ):
+        return []
+
+    parser = _VisibleText()
+    parser.feed(body.decode("utf-8", errors="replace"))
+    lines = [_clean(x) for x in "".join(parser.parts).splitlines() if _clean(x)]
+    token_cf = page_token.casefold()
+    start_idx = next((i for i, x in enumerate(lines) if _clean(x).casefold() == token_cf), None)
+    if start_idx is None:
+        return []
+
+    section: list[str] = []
+    for line in lines[start_idx + 1:start_idx + 12]:
+        clean = _clean(line)
+        if clean.casefold().startswith(next_store_prefix.casefold()):
+            break
+        section.append(clean)
+
+    label_idx = next((i for i, x in enumerate(section) if x.casefold() == address_label.casefold()), None)
+    if label_idx is None:
+        return []
+    for addr in section[label_idx + 1:label_idx + 4]:
+        addr = _clean(addr).strip(" ,|")
+        if postal_code not in addr:
+            continue
+        if province_token.casefold() not in addr.casefold():
+            continue
+        return [_candidate(
+            branch_name,
+            province=province,
+            address=addr,
+            postal_code=postal_code,
+            evidence_excerpt=f"{page_token} | {address_label} | {addr}",
+        )]
+    return []
+
+
 def extract_powerbuy(source: dict, body: bytes) -> list[dict]:
     lines, _ = html_blocks(body)
     out: list[dict] = []
@@ -482,6 +566,8 @@ EXTRACTORS = {
     "makro_branch_detail": extract_makro_detail,
     "homepro_directory": extract_homepro,
     "bigc_branch_evidence": extract_bigc_branch,
+    "lotus_current_branch": extract_lotus_current_branch,
+    "lotus_tenant_location": extract_lotus_tenant_location,
     "powerbuy_directory": extract_powerbuy,
 }
 
@@ -545,6 +631,7 @@ def refresh_place_cache(project_root: str | Path, *, fetcher: Callable[[dict], F
             observed_at=result.observed_at,
             content_hash=result.content_hash,
             reliability=source.get("reliability", "high"),
+            evidence_basis=source.get("evidence_basis", "official_store_locator"),
         )
         return source, result, candidates, records
 

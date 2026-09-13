@@ -179,5 +179,39 @@
     "reliability": "high",
     "timeout_seconds": 15,
     "enabled": true
+  },
+  {
+    "source_id": "lotus_prachinburi_current",
+    "family": "lotus",
+    "merchant": "Lotus's",
+    "source_type": "official_store_detail",
+    "url": "https://my.lotuss.com/branch/5100/th",
+    "extractor": "lotus_current_branch",
+    "branch_name": "ปราจีนบุรี",
+    "branch_token": "โลตัส ปราจีนบุรี",
+    "reliability": "high",
+    "timeout_seconds": 20,
+    "curl_fallback": true,
+    "enabled": true
+  },
+  {
+    "source_id": "lotus_prachinburi_dtac_location",
+    "family": "lotus",
+    "merchant": "Lotus's",
+    "source_type": "official_tenant_location_corroboration",
+    "evidence_basis": "official_tenant_location_corroboration",
+    "url": "https://www.dtac.co.th/prepaid/info/allshop.html",
+    "extractor": "lotus_tenant_location",
+    "branch_name": "ปราจีนบุรี",
+    "page_token": "dtac center สาขาโลตัสปราจีนบุรี",
+    "address_label": "ที่อยู่:",
+    "next_store_prefix": "dtac center",
+    "province": "ปราจีนบุรี",
+    "province_evidence_token": "ปราจีนบุรี",
+    "postal_code": "25000",
+    "reliability": "medium",
+    "timeout_seconds": 20,
+    "curl_fallback": true,
+    "enabled": true
   }
 ]

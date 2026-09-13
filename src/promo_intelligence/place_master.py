@@ -214,7 +214,7 @@ def _merge_place(a: dict, b: dict) -> dict:
 
 
 def make_locator_records(merchant: str, candidates: list[dict], *, source_id: str, url: str, observed_at: str,
-                         content_hash: str, reliability: str = "high") -> list[dict]:
+                         content_hash: str, reliability: str = "high", evidence_basis: str = "official_store_locator") -> list[dict]:
     """Create merchant/branch place records from an explicit official locator.
 
     Locator evidence establishes place existence only. It never implies that a
@@ -227,7 +227,7 @@ def make_locator_records(merchant: str, candidates: list[dict], *, source_id: st
     merchant_id = _id("place_", "merchant", merchant)
     evidence_base = {
         "source_id": source_id, "url": url, "observed_at": observed_at,
-        "content_hash": content_hash, "basis": "official_store_locator",
+        "content_hash": content_hash, "basis": evidence_basis,
         "evidence_excerpt": f"Official store locator for {merchant}",
     }
     m = {
