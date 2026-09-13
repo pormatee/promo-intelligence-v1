@@ -535,6 +535,54 @@ def extract_lotus_tenant_location(source: dict, body: bytes) -> list[dict]:
     return []
 
 
+
+def extract_tops_branch_detail(source: dict, body: bytes) -> list[dict]:
+    # Official branch detail only. Branch name alone never establishes province.
+    lines, _ = html_blocks(body)
+    branch_name = _clean(source.get("branch_name"))
+    heading_token = _clean(source.get("heading_token"))
+    province = _clean(source.get("province"))
+    province_token = _clean(source.get("province_token"))
+    expected_postal = _clean(source.get("postal_code"))
+    if (
+        not branch_name or not heading_token or not province
+        or province not in THAI_PROVINCES or not province_token
+        or not re.fullmatch(r"\d{5}", expected_postal or "")
+    ):
+        return []
+    heading_cf = heading_token.casefold()
+    heading_index = next((i for i, raw in enumerate(lines) if _clean(raw).casefold() == heading_cf), None)
+    if heading_index is None:
+        return []
+    address = None
+    latitude = None
+    longitude = None
+    for raw in lines[heading_index + 1:heading_index + 20]:
+        line = _clean(raw)
+        if not line:
+            continue
+        if line.casefold().startswith("tops ") and line.casefold() != heading_cf:
+            break
+        if address is None and line.casefold().startswith("address "):
+            candidate_address = _clean(line[len("Address "):])
+            if expected_postal in candidate_address and province_token.casefold() in candidate_address.casefold():
+                address = candidate_address
+            continue
+        if line.casefold().startswith("coordinates"):
+            m = re.search(r"Coordinates\s*([+-]?\d+(?:\.\d+)?)\s*,\s*([+-]?\d+(?:\.\d+)?)", line, re.I)
+            if m:
+                lat = float(m.group(1)); lon = float(m.group(2))
+                if -90 <= lat <= 90 and -180 <= lon <= 180:
+                    latitude, longitude = lat, lon
+    if address is None or latitude is None or longitude is None:
+        return []
+    return [_candidate(
+        branch_name, province=province, address=address, postal_code=expected_postal,
+        latitude=latitude, longitude=longitude,
+        evidence_excerpt=f"{heading_token} | Address {address} | Coordinates {latitude}, {longitude}",
+    )]
+
+
 def extract_powerbuy(source: dict, body: bytes) -> list[dict]:
     lines, _ = html_blocks(body)
     out: list[dict] = []
@@ -568,6 +616,7 @@ EXTRACTORS = {
     "bigc_branch_evidence": extract_bigc_branch,
     "lotus_current_branch": extract_lotus_current_branch,
     "lotus_tenant_location": extract_lotus_tenant_location,
+    "tops_branch_detail": extract_tops_branch_detail,
     "powerbuy_directory": extract_powerbuy,
 }
 

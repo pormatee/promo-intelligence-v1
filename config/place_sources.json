@@ -213,5 +213,23 @@
     "timeout_seconds": 20,
     "curl_fallback": true,
     "enabled": true
+  },
+  {
+    "source_id": "tops_robinson_prachinburi_detail",
+    "family": "tops",
+    "merchant": "Tops",
+    "source_type": "official_branch_detail",
+    "url": "https://corporate.tops.co.th/store-branch/tops-robinson-prachin-buri/",
+    "extractor": "tops_branch_detail",
+    "branch_name": "โรบินสัน ปราจีนบุรี",
+    "heading_token": "Tops Robinson Prachin Buri",
+    "province": "ปราจีนบุรี",
+    "province_token": "Prachin Buri",
+    "postal_code": "25000",
+    "reliability": "high",
+    "timeout_seconds": 18,
+    "recovery_budget_seconds": 24,
+    "curl_fallback": true,
+    "enabled": true
   }
 ]
